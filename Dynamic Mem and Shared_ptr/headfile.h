@@ -8,3 +8,4 @@
 #include<memory>
 #include<initializer_list>
 #include<new>
+#include<cmath>
