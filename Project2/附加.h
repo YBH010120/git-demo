@@ -1,0 +1,22 @@
+#pragma once
+#include<algorithm>
+#include<vector>
+#include<string>
+#include<chrono>
+#include<map>
+#include<iterator>
+#include<list>
+#include<forward_list>
+#include<deque>
+#include<stack>
+#include<functional>
+#include<numeric>
+#include<queue>
+#include<set>
+#include<unordered_map>
+#include<unordered_set>
+#include<utility>
+#include<fstream>
+#include<sstream>
+#include<hash_map>
+#include<hash_set>
