@@ -236,9 +236,29 @@ int main()
 	  func3(q);
 	  print(q);*/
 
-int *q = new int(5);
-	  shared_ptr<int> p(q);
-	  delete q;
-	  p = NULL;
-	  cout << p.use_count();
+      //int *q = new int(5);
+	  //shared_ptr<int> p(q);//必须使用直接初始化形式，因为接受指针参数的智能指针构造函数是explicit的
+	  //cout << p.use_count();
+
+
+  //shared_ptr和new结合使用
+  //   shared_ptr<int> p = make_shared<int>(42);
+	 //auto f = [](shared_ptr<int> p) {return p.use_count(); };//以值传递，返回2；以引用传递则返回1；
+	 //cout << f(p);
+	 //cout << p.use_count();//跳出函数块后计数为1；
+	 //int *x(new int(1024));
+	 //cout << *x << endl;//与之后指针指向的值进行对比
+	 //auto f1 = [](shared_ptr<int> p) { };
+	 //f1(shared_ptr<int>(x));
+	 //cout << *x;//此时x继续指向已经释放的内存，变成一个空悬指针，指向的值是未定义的
+  //   shared_ptr<int> p(new int(42));
+	 //int *q = p.get();
+	 //{
+		// shared_ptr<int> x(q);
+	 //}//当跳出程序块时，x释放内存，p成为空悬指针
+	 //int foo = *p;
+
+     auto sp = make_shared<int>();//
+     auto p = sp.get();
+     delete p;//当释放p指向的内存后，sp也会释放，造成二次delete，出现错误
 }
