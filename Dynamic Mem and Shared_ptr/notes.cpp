@@ -126,6 +126,34 @@ shared_ptr<int> clone(int p)
 {
 	return shared_ptr<int>(new int(p));
 }
+struct destination {
+	string des;
+	destination(string des_) :des(des_) {}
+};
+struct connection {
+	string conn;
+	connection(string conn_) :conn(conn_) {}
+};
+connection connect(destination *des_)
+{
+	cout << "connect to " << des_->des << endl;
+	return connection(des_->des);
+}
+void disconnect(connection conn_)
+{
+	cout << "disconnect " << conn_.conn << endl;
+}
+void end_connection(connection *p) { disconnect(*p); }
+void f(destination &d)
+{
+	connection c = connect(&d);
+	//shared_ptr的删除器
+	//shared_ptr<connection> p(&c, [](connection *p) {disconnect(*p); });
+	//cout << "connecting now(" << p.use_count() << ")" << endl;*/
+
+	//unique_ptr的删除器
+	unique_ptr<connection, decltype(end_connection) *> p(&c, end_connection);
+}
 int main()
 {
 	//异常抛出处理
@@ -258,7 +286,60 @@ int main()
 	 //}//当跳出程序块时，x释放内存，p成为空悬指针
 	 //int foo = *p;
 
-     auto sp = make_shared<int>();//
-     auto p = sp.get();
-     delete p;//当释放p指向的内存后，sp也会释放，造成二次delete，出现错误
+     //auto sp = make_shared<int>();//
+     //auto p = sp.get();
+     //delete p;//当释放p指向的内存后，sp也会释放，造成二次delete，出现错误
+     
+      /*destination des("A");
+	  f(des);*/
+      
+      /*int a = 10;//a是栈内存，当程序结束时，自动释放
+	  int *x = &a;
+	  {
+		  shared_ptr<int> p(x);
+		  
+	  }*///智能指针释放x指向的内存，但因a已经自动释放，造成二次delete
+
+
+
+      
+	  //auto p2(p1);不支持拷贝
+	  //auto p3=p2;不支持赋值
+	  //shared_ptr支持拷贝和赋值操作
+	  /*shared_ptr<int> s1(new int(5));
+	  auto s2(s1);
+	  auto s3 = s1;*/
+
+      int x;
+	  //class MyClass
+	  //{
+	  //public:
+		 // MyClass(string s) { cout <<s<<' '<< "created"<<endl; };
+		 // ~MyClass() { cout << "destroyed"<<endl; };
+	  //private:
+		 // string s;
+	  //};
+	  //unique_ptr<MyClass> p1(new MyClass("A"));
+	  ////虽然不能拷贝和赋值，但可以调用release和reset
+	  //unique_ptr<MyClass> p2(p1.release());//p1放弃控制权并返回指针
+	  //if (!p1)
+		 // cout << "p1  not exist" << endl;
+	  //unique_ptr<MyClass> p3(new MyClass("B"));
+	  //p2.reset(p3.release());
+	  //if (p2)
+		 // cout << "p2 exist" << endl;
+	  //if (!p3)
+		 // cout << "p3 not exist" << endl;
+	  //输出结果
+	     // A created 创建指针类型对象，并由p1指向
+		 // p1  not exist  p1放弃控制权，p2指向原来A的地址
+		 // B created    创建指针类型对象，并由p3指向
+		 // destroyed    p3放弃控制权，调用p3析构函数
+		 // p2 exist     p2接管p3原来指向的对象地址
+		 // p3 not exist   p3不存在
+		 // destroyed    最后调用p1的析构函数
+
+	  
+
+	  
 }
