@@ -46,6 +46,20 @@ void point3()//unique_ptr
 	  p1.reset();//reset
 
 }
+void point4()//weaker_ptr必须指向shared_ptr
+{
+	shared_ptr<int> sp(new int(10));
+	shared_ptr<int> sp1(sp);
+	weak_ptr<int> p1(sp);
+	weak_ptr<int> p2 = sp;
+	cout << sp.use_count() << endl;//并不会改变shared_ptr的计数
+	cout << p1.use_count() << endl;
+	//sp.reset();
+	//sp1.reset();
+	//cout << p1.expired() << endl;//若计数为0，则返回1
+	//不能使用*运算符直接访问weak_ptr指向的对象，因为对象可能不存在
+	if (shared_ptr<int> np = p1.lock());//expire为false时，lock返回一个指向对象的shared_ptr；保证访问安全性
+}
 int main()
 {
 	point3();
