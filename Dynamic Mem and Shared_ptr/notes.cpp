@@ -25,8 +25,14 @@ void error_msg(initializer_list<int> il)
 	cout << endl;
 	cout << il.size();//il中有多少个参数
 }
+
+class StrBolbPtr;
 class StrBolb
 {
+public:
+	friend class StrBolbPtr;
+	StrBolbPtr begin();
+	StrBolbPtr end();
 public:
 	typedef vector<string>::size_type size_type;
 	StrBolb();
@@ -35,8 +41,10 @@ public:
 	bool empty() const { return data->empty(); }
 	void push_back(const string &t) { data->push_back(t); }
 	void pop_back();
+	size_t getMaxsize() { return data->size(); }
 	/*string &front() const;
 	string &back() const ;*/
+	
 private:
 	shared_ptr<vector<string>> data;
 	bool check(size_type i, const string &msg) const;
@@ -82,6 +90,43 @@ void StrBolb::pop_back()
 	check(0, "pop_back on empty StrBolb");
 	data->pop_back();
 }
+
+class StrBolbPtr
+{
+public:
+	StrBolbPtr() :curr(0) {}
+	StrBolbPtr(StrBolb &a, size_t sz = 0) :wptr(a.data), curr(sz) {}
+	string &deref() const;
+	StrBolbPtr &incr();
+	size_t getSize() { return curr; }
+private:
+	shared_ptr<vector<string>> check(size_t, const string &) const;
+	weak_ptr<vector<string>> wptr;
+	size_t curr;
+};
+shared_ptr<vector<string>> StrBolbPtr::check(size_t i, const string &msg) const
+{
+	auto ret = wptr.lock();
+	if (!ret)
+		throw runtime_error("unbound StrBolbPtr");
+	if (i > ret->size())
+		throw out_of_range(msg);
+	return ret;
+}
+string& StrBolbPtr::deref() const
+{
+	auto p = check(curr, "deference past end");
+	return (*p)[curr];
+}
+StrBolbPtr& StrBolbPtr::incr()
+{
+	check(curr, "increment past end of StrBolbPtr");
+	++curr;
+	return *this;
+}
+StrBolbPtr StrBolb::begin() { return StrBolbPtr(*this); }
+StrBolbPtr StrBolb::end(){	return StrBolbPtr(*this, data->size());}
+
 vector<int> *func()
 {
 	return new vector<int>;
@@ -340,15 +385,55 @@ int main()
 		 // destroyed    最后调用p1的析构函数
 
 	  
-	  shared_ptr<int> sp=make_shared<int>(10);
+	  /*shared_ptr<int> sp=make_shared<int>(10);
 	  shared_ptr<int> sp1(sp);
 	  weak_ptr<int> p1(sp);
-	  weak_ptr<int> p2 = sp;
+	  weak_ptr<int> p2 = sp;*/
 	  //cout << sp.use_count() << endl;//并不会改变shared_ptr的计数
 	  //cout << p1.use_count() << endl;//与weak_ptr共享的智能指针的数量
 	  //sp.reset();
 	  //sp1.reset();
 	  //cout << p1.expired() << endl;//若计数为0，则返回1
 	  //不能使用*运算符直接访问weak_ptr指向的对象，因为对象可能不存在
-	  if (shared_ptr<int> np = p1.lock());//expire为false时，lock返回一个指向对象的shared_ptr；保证访问安全性
+	  //if (shared_ptr<int> np = p1.lock());//expire为false时，lock返回一个指向对象的shared_ptr；保证访问安全性
+
+
+	  //12.20练习
+	  /*string name = "StrBolb.txt";
+	  fstream in(name, ios::in);
+	  string temp;
+	  StrBolb a;
+	  while (getline(in,temp))
+	  {
+		  a.push_back(temp);
+	  }
+	  for (StrBolbPtr p(a.begin());p.getSize()!=a.getMaxsize(); p.incr())
+	  {
+		  cout << p.deref() << endl;
+	  }*/
+	  
+	  //shared_ptr没有定义下标运算符，使用get返回内置指针进行访问
+	  /*shared_ptr<int> sp(new int[10], [](int *p) {delete[]p; });
+	  for (int i = 0; i < 10; ++i)
+		  cout << *(sp.get() + i) << ' ';*/
+
+	  //练习12.23
+	 // const char *s1 = "hello,";
+	 // const char *s2 = "world";
+	 // char *sp = new char[strlen(s1)+strlen(s2)+1];
+	  //strcpy_s(sp,strlen(s1)+1,s1);//需要给出源字符串的大小(包括'\0')
+	  //strcat_s(sp,strlen(s2)+strlen(sp)+1,s2);//需要理解第二个参数是源字符串追加到目的字符串后缓冲区的总大小
+	  //cout << sp;
+	  //连接string
+	  /*string s1 = "hello,", s2 = "world";
+	  char *p = new char[s1.size()+s2.size()+1];
+	  strcpy_s(p,s1.size()+s2.size()+1,(s1 + s2).c_str());
+	  cout << p;*/
+	  //动态增长的数组
+	  /*string a;
+	  cin >> a;
+	  char *p = new char[a.size()+1];
+	  strcpy_s(p,a.size()+1,a.c_str());
+	  cout << p << endl;
+	  delete[]p;*/
 }
