@@ -126,7 +126,10 @@
     <ClCompile Include="essential points.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="notes.cpp" />
+    <ClCompile Include="notes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="文本查询.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headfile.h" />

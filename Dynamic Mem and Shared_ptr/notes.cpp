@@ -355,7 +355,7 @@ int main()
 	  auto s2(s1);
 	  auto s3 = s1;*/
 
-      int x;
+      
 	  //class MyClass
 	  //{
 	  //public:
@@ -436,4 +436,44 @@ int main()
 	  strcpy_s(p,a.size()+1,a.c_str());
 	  cout << p << endl;
 	  delete[]p;*/
+
+      int x;
+	  //allocator·ÖÅäÄÚ´æ
+	  /*allocator<string> alloc;
+	  auto const p = alloc.allocate(10);
+	  auto q = p;
+	  
+	  alloc.construct(q++);
+	  
+	  alloc.construct(q++, 10, 'c');
+	  
+	  alloc.construct(q++, "hello,world");
+	  while (q!=p)
+	  {
+		  alloc.destroy(--q);
+	  }*/
+
+	  /*allocator<int> alloc;
+	  vector<int> vec(10, 5);
+	  auto p = alloc.allocate(vec.size() * 2);
+	  auto q = uninitialized_copy(vec.begin(), vec.end(), p);
+	  uninitialized_fill_n(q, vec.size(), 42);*/
+	  
+	  /*allocator<string> alloc;
+	  auto const p = alloc.allocate(10);
+	  auto q = p;
+	  string s;
+	  while (cin>>s&&q!=p+10)
+	  {
+		  alloc.construct(q++, s);
+	  }
+	  auto sp = p;
+	  while (sp!=q)
+	  {
+		  cout << *(sp++);
+	  }*/
+
+
+
+
 }

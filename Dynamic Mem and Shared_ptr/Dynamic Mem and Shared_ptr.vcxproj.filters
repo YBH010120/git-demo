@@ -21,6 +21,9 @@
     <ClCompile Include="essential points.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="文本查询.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headfile.h">
